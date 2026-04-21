@@ -13,3 +13,9 @@ brew install snapbug-ai/tap/snapbug
 ```bash
 brew upgrade snapbug
 ```
+
+## Uninstall
+
+```bash
+brew uninstall snapbug
+```
