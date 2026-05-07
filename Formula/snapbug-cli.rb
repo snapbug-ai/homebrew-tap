@@ -14,6 +14,54 @@ class SnapbugCli < Formula
       #!/bin/bash
       exec "#{Formula["openjdk@21"].opt_bin}/java" -jar "#{libexec}/snapbug-cli.jar" "$@"
     EOS
+
+    # Native Messaging Host launcher
+    (libexec/"snapbug-native-host.sh").write <<~EOS
+      #!/bin/bash
+      read_message() {
+        local len_bytes
+        len_bytes=$(dd bs=4 count=1 2>/dev/null | od -An -tu4 -N4 | tr -d ' ')
+        if [ -z "$len_bytes" ] || [ "$len_bytes" -eq 0 ]; then return 1; fi
+        dd bs="$len_bytes" count=1 2>/dev/null
+      }
+      write_message() {
+        local msg="$1" len=${#msg}
+        printf "$(printf '\\\\x%02x\\\\x%02x\\\\x%02x\\\\x%02x' $((len&0xFF)) $(((len>>8)&0xFF)) $(((len>>16)&0xFF)) $(((len>>24)&0xFF)))"
+        printf '%s' "$msg"
+      }
+      MSG=$(read_message) || exit 0
+      ACTION=$(echo "$MSG" | grep -o '"action":"[^"]*"' | cut -d'"' -f4)
+      if [ "$ACTION" = "start" ]; then
+        if curl -s --connect-timeout 1 http://localhost:9090/api/status >/dev/null 2>&1; then
+          write_message '{"started":true,"already_running":true}'; exit 0
+        fi
+        SNAPBUG_BIN="#{bin}/snapbug"
+        nohup "$SNAPBUG_BIN" serve > /tmp/snapbug-cli.log 2>&1 &
+        write_message '{"started":true,"pid":'"$!"'}'
+      else
+        write_message '{"error":"unknown action"}'
+      fi
+    EOS
+    chmod 0755, libexec/"snapbug-native-host.sh"
+  end
+
+  def post_install
+    native_host_dir = if OS.mac?
+      Pathname.new(Dir.home)/"Library/Application Support/Google/Chrome/NativeMessagingHosts"
+    else
+      Pathname.new(Dir.home)/".config/google-chrome/NativeMessagingHosts"
+    end
+    native_host_dir.mkpath
+
+    manifest = {
+      "name" => "io.snapbug.cli",
+      "description" => "Snapbug CLI launcher",
+      "path" => (libexec/"snapbug-native-host.sh").to_s,
+      "type" => "stdio",
+      "allowed_origins" => ["chrome-extension://PLACEHOLDER_EXTENSION_ID/"],
+    }
+
+    (native_host_dir/"io.snapbug.cli.json").write(JSON.generate(manifest))
   end
 
   def caveats
@@ -26,7 +74,7 @@ class SnapbugCli < Formula
         snapbug stop     # Stop daemon
 
       The Chrome Extension auto-discovers the CLI at localhost:9090.
-      Install the extension from Chrome Web Store for the full experience.
+      Native Messaging Host installed for auto-start support.
     EOS
   end
 
