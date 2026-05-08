@@ -20,24 +20,24 @@ class SnapbugCli < Formula
       #!/bin/bash
       read_message() {
         local len_bytes
-        len_bytes=$(dd bs=4 count=1 2>/dev/null | od -An -tu4 -N4 | tr -d ' ')
-        if [ -z "$len_bytes" ] || [ "$len_bytes" -eq 0 ]; then return 1; fi
-        dd bs="$len_bytes" count=1 2>/dev/null
+        len_bytes=\\$(dd bs=4 count=1 2>/dev/null | od -An -tu4 -N4 | tr -d ' ')
+        if [ -z "\\$len_bytes" ] || [ "\\$len_bytes" -eq 0 ]; then return 1; fi
+        dd bs="\\$len_bytes" count=1 2>/dev/null
       }
       write_message() {
-        local msg="$1" len=${#msg}
-        printf "$(printf '\\\\x%02x\\\\x%02x\\\\x%02x\\\\x%02x' $((len&0xFF)) $(((len>>8)&0xFF)) $(((len>>16)&0xFF)) $(((len>>24)&0xFF)))"
-        printf '%s' "$msg"
+        local msg="\\$1" len=\\${#msg}
+        printf "\\$(printf '\\\\\\\\x%02x\\\\\\\\x%02x\\\\\\\\x%02x\\\\\\\\x%02x' \\$((len&0xFF)) \\$(((len>>8)&0xFF)) \\$(((len>>16)&0xFF)) \\$(((len>>24)&0xFF)))"
+        printf '%s' "\\$msg"
       }
-      MSG=$(read_message) || exit 0
-      ACTION=$(echo "$MSG" | grep -o '"action":"[^"]*"' | cut -d'"' -f4)
-      if [ "$ACTION" = "start" ]; then
+      MSG=\\$(read_message) || exit 0
+      ACTION=\\$(echo "\\$MSG" | grep -o '"action":"[^"]*"' | cut -d'"' -f4)
+      if [ "\\$ACTION" = "start" ]; then
         if curl -s --connect-timeout 1 http://localhost:9090/api/status >/dev/null 2>&1; then
           write_message '{"started":true,"already_running":true}'; exit 0
         fi
         SNAPBUG_BIN="#{bin}/snapbug"
-        nohup "$SNAPBUG_BIN" serve > /tmp/snapbug-cli.log 2>&1 &
-        write_message '{"started":true,"pid":'"$!"'}'
+        nohup "\\$SNAPBUG_BIN" serve > /tmp/snapbug-cli.log 2>&1 &
+        write_message '{"started":true,"pid":'"\\$!"'}'
       else
         write_message '{"error":"unknown action"}'
       fi
