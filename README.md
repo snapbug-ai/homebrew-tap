@@ -1,20 +1,20 @@
 # Snapbug Homebrew Tap
 
-Install [Snapbug Desktop](https://snapbug.ai) via Homebrew.
+Установка Snapbug через Homebrew.
 
-## Install
+## Установка
 
 ```bash
 brew install snapbug-ai/tap/snapbug
 ```
 
-## Update
+## Обновление
 
 ```bash
 brew upgrade snapbug
 ```
 
-## Uninstall
+## Удаление
 
 ```bash
 brew uninstall snapbug
