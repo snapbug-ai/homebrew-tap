@@ -8,6 +8,14 @@ class SnapbugCli < Formula
 
   depends_on "openjdk@21"
 
+  service do
+    run [opt_bin/"snapbug", "serve"]
+    keep_alive true
+    log_path var/"log/snapbug-cli.log"
+    error_log_path var/"log/snapbug-cli.log"
+    process_type :background
+  end
+
   def install
     libexec.install "snapbug-cli.jar"
     (bin/"snapbug").write <<~EOS
@@ -73,8 +81,10 @@ class SnapbugCli < Formula
         snapbug status   # Check if running
         snapbug stop     # Stop daemon
 
+      To start automatically at login:
+        brew services start snapbug-ai/tap/snapbug-cli
+
       The Chrome Extension auto-discovers the CLI at localhost:9090.
-      Native Messaging Host installed for auto-start support.
     EOS
   end
 
