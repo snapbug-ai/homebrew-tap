@@ -4,7 +4,7 @@ class SnapbugCli < Formula
   version "0.1.0"
 
   url "https://github.com/snapbug-ai/releases/releases/download/cli-v#{version}/snapbug-cli.jar"
-  sha256 "319f35b5f50c99c2d12c69f93ce5fa526b377b1046b901ac0a486f150bf516c6"
+  sha256 "e44fa78dae81912d400aba2024b0a7528d7d1c5ff75ac8f7e4ac40c761c9ce72"
 
   depends_on "openjdk@21"
 
