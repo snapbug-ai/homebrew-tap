@@ -3,7 +3,7 @@ class SnapbugCli < Formula
   homepage "https://snapbug.ai"
   version "0.1.0"
 
-  url "https://github.com/nickolasmv/Snapbug/releases/download/cli-v#{version}/snapbug-cli.jar"
+  url "https://github.com/snapbug-ai/releases/releases/download/cli-v#{version}/snapbug-cli.jar"
   sha256 "319f35b5f50c99c2d12c69f93ce5fa526b377b1046b901ac0a486f150bf516c6"
 
   depends_on "openjdk@21"
