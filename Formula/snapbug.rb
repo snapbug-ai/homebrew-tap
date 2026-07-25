@@ -27,7 +27,19 @@ class Snapbug < Formula
       File.file?(p) && (p.include?("/bin/") || p.include?("/MacOS/"))
     end
     odie "snapbug launcher not found in tarball" unless launcher
-    bin.install_symlink launcher => "snapbug"
+
+    # Not a symlink: the jpackage launcher locates snapbug.cfg and its bundled runtime
+    # relative to how it was invoked, so reaching it through Homebrew's symlink chain
+    # sends it looking beside the symlink and it dies with
+    #   Error opening ".../Cellar/snapbug/Contents/app/snapbug.cfg": No such file
+    # Exec it by absolute path. opt_prefix rather than prefix, so the wrapper survives
+    # version bumps.
+    relative = Pathname.new(launcher).relative_path_from(prefix)
+    (bin/"snapbug").write <<~SH
+      #!/bin/bash
+      exec "#{opt_prefix}/#{relative}" "$@"
+    SH
+    (bin/"snapbug").chmod 0755
   end
 
   service do
