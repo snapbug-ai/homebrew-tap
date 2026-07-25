@@ -1,19 +1,24 @@
 class Snapbug < Formula
   desc "Debug & inspect mobile apps from Chrome — CLI daemon with bundled JRE"
   homepage "https://snapbug.ai"
-  version "0.1.1"
+  version "0.1.2"
   license "Proprietary"
 
   on_macos do
     on_arm do
       url "https://github.com/snapbug-ai/releases/releases/download/cli-v#{version}/snapbug-macos-arm64.tar.gz"
-      sha256 "8fda58c6fa7bcd5e5bb5add2a0d97a0657ca684f689da89e2aeafcf7dd832cde"
+      sha256 "e24b267b49f4c5304d45b08c629c26bba467e51a0f7b23db512f0c3d4f0b4cea"
     end
     on_intel do
       url "https://github.com/snapbug-ai/releases/releases/download/cli-v#{version}/snapbug-macos-x64.tar.gz"
-      sha256 "7489966f06babe5acf7e28cf6e7d8bfeb3691a938305e207f99fbf4679e291d3"
+      sha256 "17bf83b590de72cb7ccee13214893cd92913590467d4df168c9a5413e605a035"
     end
   end
+
+  # This formula supersedes snapbug-cli, which owned the same symlink. Without this,
+  # anyone who installed the old name gets a successful install whose `snapbug`
+  # command still points at the old Cellar.
+  link_overwrite "bin/snapbug"
 
   def install
     # The tarball is a jpackage app-image with an embedded JRE (no openjdk dependency).
