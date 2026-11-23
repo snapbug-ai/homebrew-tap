@@ -1,17 +1,17 @@
 class Snapbug < Formula
   desc "Debug & inspect mobile apps from Chrome — CLI daemon with bundled JRE"
   homepage "https://snapbug.ai"
-  version "0.1.2"
+  version "1.0.2"
   license "Proprietary"
 
   on_macos do
     on_arm do
       url "https://github.com/snapbug-ai/releases/releases/download/cli-v#{version}/snapbug-macos-arm64.tar.gz"
-      sha256 "e24b267b49f4c5304d45b08c629c26bba467e51a0f7b23db512f0c3d4f0b4cea"
+      sha256 "bb1d83efbd3ae35f1702e196567ede38b1343a4829470c13e80e71fb13bc3fe3"
     end
     on_intel do
       url "https://github.com/snapbug-ai/releases/releases/download/cli-v#{version}/snapbug-macos-x64.tar.gz"
-      sha256 "17bf83b590de72cb7ccee13214893cd92913590467d4df168c9a5413e605a035"
+      sha256 "1b7e254e8dd7f89be52444eb2ab98136a2ca0e91df915d7d49ae58794ce8a182"
     end
   end
 
