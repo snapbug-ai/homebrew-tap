@@ -1,14 +1,14 @@
 class Snapbug < Formula
   desc "Debug & inspect mobile apps from Chrome — CLI daemon with bundled JRE"
   homepage "https://snapbug.ai"
-  version "1.0.6"
+  version "1.0.8"
   license "Proprietary"
 
   # Apple Silicon only: Intel builds stopped after 1.0.2 (see release.yml).
   depends_on arch: :arm64
 
   url "https://github.com/snapbug-ai/releases/releases/download/cli-v#{version}/snapbug-macos-arm64.tar.gz"
-  sha256 "d4517260eba5d799a0eadd14568d4955cabf1708bd5ed9a105a0ec0007a91a45"
+  sha256 "4cf63c976336d4c6b8138e0346804465724027bacda3006b0d08f0afa87f3107"
 
   # This formula supersedes snapbug-cli, which owned the same symlink. Without this,
   # anyone who installed the old name gets a successful install whose `snapbug`
